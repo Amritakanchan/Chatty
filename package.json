@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "An application for you to chitter chatter as you are an introvert. Jk, its for extroverts too.",
   "main": "index.js",
+  "engines":{
+    "node":">=20.19.0"
+  },
   "scripts": {
     "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
     "start": "npm run start --prefix backend"
