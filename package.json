@@ -4,7 +4,7 @@
   "description": "An application for you to chitter chatter as you are an introvert. Jk, its for extroverts too.",
   "main": "index.js",
   "engines":{
-    "node":">=20.13.0",
+    "node":">=22.13.0",
     "npm": ">=10.0.0"
   },
   "scripts": {
