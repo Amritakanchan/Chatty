@@ -35,21 +35,21 @@ const signup = async (req, res) => {
             password: hashedPassword
         });
 
-        if(newUser){
-            generateToken(newUser._id, res); // created this function in lib/utils.js
-            await newUser.save();
+        if(newUser){ // saving user to db and generating token for user
+            const savedUser = await newUser.save();
+            generateToken(savedUser._id, res); // created this function in lib/utils.js
 
             res.status(201).json({
-                _id: newUser._id,
-                fullname: newUser.fullName,
-                email: newUser.email,
-                profilePic: newUser.profilePic
+                _id: savedUser._id,
+                fullname: savedUser.fullName,
+                email: savedUser.email,
+                profilePic: savedUser.profilePic
             });
 
         } else {
             res.status(400).json({message: "Invalid User data"});
         }
-        // send a welcome email to user after successful signup                 
+        // TODO : send a welcome email to user after successful signup                 
     } 
     catch(err) {
         console.log("Error in signup controller", err);
