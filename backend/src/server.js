@@ -1,18 +1,14 @@
 import express from 'express';
-import dotenv from 'dotenv';
 import authRoutes from './routes/auth.route.js'
 import msgRoutes from './routes/message.route.js'
 import connectDB from './lib/db.js'
+import ENV from './lib/env.js'; // storing all env values in env.js file to use it as an obejct
 
-import path from 'path'; // doubt
-import { fileURLToPath } from 'url'; // doubt 
+import path from 'path'; 
 
-const __filename = fileURLToPath(import.meta.url); // doubt 
-const __dirname = path.dirname(__filename);  // doubt
+const __dirname = path.resolve();  
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') }); // doubt
-
-const PORT = process.env.PORT || 3000; 
+const PORT = ENV.PORT; 
 const app = express();
 
 app.use(express.json()); // a middleware to parse incoming requests with JSON payloads
@@ -24,13 +20,13 @@ app.use('/api/auth', authRoutes);
 app.use('/api/message', msgRoutes);
 
 // making ready for deployment
-
-if(process.env.NODE_ENV==='production'){
+if(ENV.NODE_ENV==='production'){
     
-    app.use(express.static(path.join(__dirname, "../../frontend/dist")));
+    app.use(express.static(path.resolve(__dirname, "../frontend/dist")));
+    console.log(path.resolve(__dirname, "../frontend/dist"));
 
     app.get(/(.*)/, (req, res)=> {
-       res.sendFile(path.resolve(__dirname, "../../frontend/dist/index.html"));
+       res.sendFile(path.resolve(__dirname, "../frontend/dist/index.html"));
     }) // For any route other than the above, send the index.html file from the frontend/dist folder
 }
 

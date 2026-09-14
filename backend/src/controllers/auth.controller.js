@@ -1,5 +1,7 @@
 import User from '../models/User.js';
 import generateToken from '../lib/utils.js';
+import sendWelcomeEmail from '../emails/emailHandlers.js';
+import ENV from '../lib/env.js'; // using a js file which has all env value as an object
 import bcrypt from "bcryptjs";
 
 const signup = async (req, res) => {
@@ -35,7 +37,7 @@ const signup = async (req, res) => {
             password: hashedPassword
         });
 
-        if(newUser){ // saving user to db and generating token for user
+        if(newUser){ // saving user to db ; generating token for user ; sending welcome email
             const savedUser = await newUser.save();
             generateToken(savedUser._id, res); // created this function in lib/utils.js
 
@@ -46,10 +48,15 @@ const signup = async (req, res) => {
                 profilePic: savedUser.profilePic
             });
 
+            try {
+                await sendWelcomeEmail(savedUser.email, savedUser.fullName, ENV.CLIENT_URL);
+            } catch (error) {
+                console.error('Failed to send welcome email : ', error);
+            }
+
         } else {
             res.status(400).json({message: "Invalid User data"});
         }
-        // TODO : send a welcome email to user after successful signup                 
     } 
     catch(err) {
         console.log("Error in signup controller", err);
