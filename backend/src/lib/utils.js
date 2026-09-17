@@ -7,7 +7,7 @@ const generateToken = (userId, res) => {
         throw new Error("JWT_SECRET not configured");
     }
     // creating a token for the user
-    const token = jwt.sign({userId}, DragEvent.JWT_SECRET, {expiresIn: "7d"});
+    const token = jwt.sign({userId}, ENV.JWT_SECRET, {expiresIn: "7d"});
 
     res.cookie("jwt", token, {
         maxAge: 7*24*60*60*1000, // this is 7 days in milliseconds

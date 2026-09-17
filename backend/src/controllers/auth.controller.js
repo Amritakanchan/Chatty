@@ -64,4 +64,49 @@ const signup = async (req, res) => {
     }
 }
 
-export default signup;
+const login = async (req, res) => {
+    const { email, password } = req.body;
+
+    if( !email || !password) {
+        return res.status(400).json({message: "All feilds are required"});
+    }
+
+    try {
+        const user = await User.findOne({email});
+        console.log(user);
+
+        if(!user) { // verifying if user exists in db
+            return res.status(400).json({message: "Invalid credentials"});
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(password, user.password); // password checking function
+
+        if(!isPasswordCorrect){ // verifying if entered password is correct
+            return res.status(400).json({message: "Invalid credentials"});
+        }
+
+        generateToken(user._id, res); // generating a token for user
+
+            res.status(200).json({
+                _id: user._id,
+                fullname: user.fullName,
+                email: user.email,
+                profilePic: user.profilePic
+            });
+
+    } catch(err) {
+        console.error("Error in login controller : ", err);
+        res.status(500).json({message: "Internal Server Error"});
+    }
+}
+
+const logout =  (_, res) => {     // clearing users cookie session
+    res.clearCookie("jwt", {
+        httpOnly: true, 
+        sameSite: "strict", 
+        secure: ENV.NODE_ENV==="development"? false : true
+    }); 
+    res.status(200).json({message: "Logged Out Succcesfully"});
+}
+
+export { signup, login, logout };
