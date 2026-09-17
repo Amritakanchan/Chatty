@@ -4,7 +4,7 @@ import msgRoutes from './routes/message.route.js'
 import connectDB from './lib/db.js'
 import ENV from './lib/env.js'; // storing all env values in env.js file to use it as an obejct
 
-import path from 'path'; 
+import path from 'path';
 
 const __dirname = path.resolve();  
 
