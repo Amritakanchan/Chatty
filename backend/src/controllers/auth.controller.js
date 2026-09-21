@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import generateToken from '../lib/utils.js';
 import sendWelcomeEmail from '../emails/emailHandlers.js';
+import cloudinary from '../lib/cloudinary.js';
 import ENV from '../lib/env.js'; // using a js file which has all env value as an object
 import bcrypt from "bcryptjs";
 
@@ -73,7 +74,7 @@ const login = async (req, res) => {
 
     try {
         const user = await User.findOne({email});
-        console.log(user);
+        console.log(user); 
 
         if(!user) { // verifying if user exists in db
             return res.status(400).json({message: "Invalid credentials"});
@@ -100,7 +101,7 @@ const login = async (req, res) => {
     }
 }
 
-const logout =  (_, res) => {     // clearing users cookie session
+const logout =  (_, res) => {  // clearing users cookie session
     res.clearCookie("jwt", {
         httpOnly: true, 
         sameSite: "strict", 
@@ -109,4 +110,26 @@ const logout =  (_, res) => {     // clearing users cookie session
     res.status(200).json({message: "Logged Out Succcesfully"});
 }
 
-export { signup, login, logout };
+const updateProfile = async (req, res) => { // users can update their profile image
+    try {
+        const {profilePic} = req.body;
+
+        if(!profilePic) {
+            return res.status(400).json({message: "Profile picture is required"});
+
+            const user = req.user._id;
+
+            const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
+            const updatedUser = await User.findByIdAndUpdate(user, {profilePic: uploadResponse.secure_url}, {new:true}); // new option returns the updated document
+            res.status(200).json({message: "Profile picture updated successfully", updatedUser});
+
+
+        }
+    } catch (err) {
+        console.log("Error in updating profile picture(from auth controller) : ", err);
+        res.status(500).json({message: "Internal server error"});
+    }
+}
+
+export { signup, login, logout, updateProfile };
