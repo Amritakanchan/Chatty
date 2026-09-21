@@ -1,7 +1,9 @@
 import express from 'express';
-import authRoutes from './routes/auth.route.js'
-import msgRoutes from './routes/message.route.js'
-import connectDB from './lib/db.js'
+import cookieParser from 'cookie-parser';
+
+import authRoutes from './routes/auth.route.js';
+import msgRoutes from './routes/message.route.js';
+import connectDB from './lib/db.js';
 import ENV from './lib/env.js'; // storing all env values in env.js file to use it as an obejct
 
 import path from 'path';
@@ -12,6 +14,7 @@ const PORT = ENV.PORT;
 const app = express();
 
 app.use(express.json()); // a middleware to parse incoming requests with JSON payloads
+app.use(cookieParser());
 
 console.log('PORT =', PORT);
 
