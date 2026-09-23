@@ -2,8 +2,15 @@ import express from 'express';
 
 import { signup, login, logout, updateProfile } from '../controllers/auth.controller.js';
 import protectRoute from '../middleware/auth.middleware.js';
+import arcjetProtection from '../middleware/arcjet.middleware.js';
 
 const router = express.Router();
+
+router.use(arcjetProtection); // will be triggered whenever a route is called
+
+// router.get('/test', (req, res)=> {
+//     res.status(200).json({message:"Testing page"});
+// })
 
 router.post('/signup', signup);  // signup function would be defined in auth.controller.js
 

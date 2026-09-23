@@ -8,15 +8,16 @@ import ENV from './lib/env.js'; // storing all env values in env.js file to use 
 
 import path from 'path';
 
-const __dirname = path.resolve();  
+const __dirname = path.resolve();   
 
 const PORT = ENV.PORT; 
-const app = express();
+const app = express(); 
 
+app.set('trust proxy', 1); // this is set for rate limiting purposes
 app.use(express.json()); // a middleware to parse incoming requests with JSON payloads
 app.use(cookieParser());
 
-console.log('PORT =', PORT);
+console.log('PORT =', PORT); // delete later!!!!!!!
 
 app.use('/api/auth', authRoutes);
 
