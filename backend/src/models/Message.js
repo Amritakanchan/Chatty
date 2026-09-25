@@ -12,7 +12,11 @@ const messageSchema = new mongoose.Schema(
             ref: "User",
             required: true
         },
-        text: String,
+        text: {
+            type: String,
+            trim:true,
+            maxLength: 2000
+        },
         image: String
     },
     { timestamp: true}

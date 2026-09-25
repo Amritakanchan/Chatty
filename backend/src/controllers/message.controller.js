@@ -65,7 +65,19 @@ const sendMessage = async (req, res) => {  // i have a todo list here
         const {id: receiverId} = req.params;
         const senderId = req.user._id;
 
-        let imgUrl;
+        if(!text && !img) {
+            return res.status(400).json({message:"Text or image is required."});
+        }
+        if(senderId.equals(receiverId)) {
+            return res.status(400).json({ message : "Cannot send message to yourself."});
+        }
+        const receiverExists = await User.exists({_id: receiverId});
+        if(!receiverExists) {
+            return res.status(404).json({message: "Receiver not found"});
+        }
+
+        let imgUrl; // the url that the cloudinary gives us will be stored here
+
         if(img) {
             // upload base64 img to cloudinary
             const uploadResponse = await cloudinary.uploader.upload(img);
